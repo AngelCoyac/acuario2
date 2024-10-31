@@ -1,38 +1,91 @@
-<?php
-class Conexion {
-    private $servername = "localhost";
-    private $username = "root"; // Cambia según tu configuración
-    private $password = ""; // Cambia según tu configuración
-    private $dbname = "acuario"; // Cambia según tu base de datos
 
-    public function connect() {
-        $conn = new mysqli($this->servername, $this->username, $this->password, $this->dbname);
-        if ($conn->connect_error) {
-            die("Connection failed: " . $conn->connect_error);
-        }
-        return $conn;
+<?php
+include 'conexion.php'; 
+
+class OpcionesFormulario {
+    private $conn;
+
+    public function __construct() {
+        $this->conn = new Conexion(); 
     }
 
-    public function query($sql) {
-        $conn = $this->connect();
-        return $conn->query($sql);
+    public function obtenerOpcionesAreas() {
+        $sql = "SELECT pk_area, nombre FROM area";
+        $result = $this->conn->query($sql);
+        $opciones = "";
+
+        if ($result && $result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $opciones .= "<option value='" . $row['pk_area'] . "'>" . $row['nombre'] . "</option>";
+            }
+        } else {
+            $opciones = "<option value=''>No se encontraron áreas</option>";
+        }
+
+        return $opciones;
+    }
+
+    public function obtenerOpcionesRoles() {
+        $sql = "SELECT pk_roles, roles FROM roles";
+        $result = $this->conn->query($sql);
+        $opciones = "";
+
+        if ($result && $result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $opciones .= "<option value='" . $row['pk_roles'] . "'>" . $row['roles'] . "</option>";
+            }
+        } else {
+            $opciones = "<option value=''>No se encontraron roles</option>";
+        }
+
+        return $opciones;
     }
 }
 
 class ValidarUsuario {
+    private $conn;
+
+    public function __construct() {
+        $this->conn = new Conexion(); 
+    }
+
     public function registrar($nombres, $apaterno, $amaterno, $fk_area, 
-        $fecha_nac, $genero, $direccion, $correo, $num_telefono, $contrasena, $pk_rol) {
-        
-        $conn = new Conexion();
+    $fecha_nac, $genero, $direccion, $correo, $num_telefono, $contrasena, $fk_roles) {
+    
+    
+    $query = "SELECT * FROM persona WHERE correo = '$correo'";
+    $result = $this->conn->query($query);
 
-        // Inserta el usuario en la base de datos
-        $sql = "INSERT INTO usuarios (nombres, apaterno, amaterno, fk_area, 
-            fecha_nac, genero, direccion, correo, num_telefono, contrasena, pk_rol) 
-            VALUES ('$nombres', '$apaterno', '$amaterno', '$fk_area', 
-            '$fecha_nac', '$genero', '$direccion', '$correo', '$num_telefono', 
-            '$contrasena', '$pk_rol')";
+    if ($result && $result->num_rows > 0) {
+        return false; 
+    }
 
-        return $conn->query($sql); // Devuelve true o false
+   
+    $sql = "INSERT INTO persona (nombre, apaterno, amaterno, correo, 
+            fecha_nac, telefono, genero, direccion, contrasena, fk_roles, fk_area) 
+            VALUES ('$nombres', '$apaterno', '$amaterno', '$correo', 
+            '$fecha_nac', '$num_telefono', '$genero', '$direccion', 
+            '$contrasena', '$fk_roles', $fk_area)";
+
+    if ($this->conn->query($sql)) {
+        return true; 
+    } else {
+        return false; 
     }
 }
+
+
+    public function validarLogin($correo, $contrasena) {
+        $query = "SELECT * FROM persona WHERE correo = '$correo' AND contrasena = '$contrasena'";
+        $result = $this->conn->query($query);
+
+        if ($result && $result->num_rows > 0) {
+            return $result->fetch_assoc(); 
+        }
+        return false; 
+    }
+   
+    
+}
 ?>
+

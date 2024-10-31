@@ -1,3 +1,23 @@
+<?php
+include 'class/clases.php';
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $correo = $_POST['correo'];
+    $contrasena = $_POST['contrasena'];
+
+    $usuario = new ValidarUsuario();
+    $resultado = $usuario->validarLogin($correo, $contrasena);
+
+    if ($resultado) {
+        session_start();
+        $_SESSION['usuario'] = $resultado; // almacenar información del usuario
+        header("Location: login.html"); // Cambia esta línea a la página a la que deseas redirigir
+        exit;
+    } else {
+        echo "Credenciales incorrectas.";
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -9,7 +29,7 @@
 <body>
     <div class="container">
         <h1>Iniciar Sesión</h1>
-        <form action="procesar_login.php" method="POST">
+        <form action="login.php" method="POST">
             <label for="correo">Correo:</label>
             <input type="email" id="correo" name="correo" required>
 

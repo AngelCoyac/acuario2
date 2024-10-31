@@ -1,7 +1,9 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+include 'class/clases.php';
+
+$opcionesFormulario = new OpcionesFormulario();
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -14,8 +16,8 @@ ini_set('display_errors', 1);
     <div class="container">
         <h1>Registro de Usuario</h1>
         <form action="registro.php" method="POST">
-            <label for="nombres">Nombre(s):</label>
-            <input type="text" id="nombres" name="nombres" required>
+            <label for="nombre">Nombre(s):</label>
+            <input type="text" id="nombre" name="nombre" required>
 
             <label for="apaterno">Apellido Paterno:</label>
             <input type="text" id="apaterno" name="apaterno" required>
@@ -32,44 +34,20 @@ ini_set('display_errors', 1);
             <label for="correo">Correo:</label>
             <input type="email" id="correo" name="correo" required>
 
-            <label for="num_telefono">Número de Teléfono:</label>
-            <input type="text" id="num_telefono" name="num_telefono" required>
+            <label for="telefono">Número de Teléfono:</label>
+            <input type="text" id="telefono" name="telefono" required>
 
             <label for="contrasena">Contraseña:</label>
             <input type="password" id="contrasena" name="contrasena" required>
 
             <label for="fk_area">Área:</label>
             <select id="fk_area" name="fk_area" required>
-                <?php
-                include 'conexion.php';
-                $conn = new Conexion();
-                $sql = "SELECT pk_area, nombre FROM areas";
-                $result = $conn->query($sql);
-                
-                if (!$result) {
-                    echo "Error en la consulta de áreas: " . $conn->conn->error;
-                } else {
-                    while ($row = $result->fetch_assoc()) {
-                        echo "<option value='" . $row['pk_area'] . "'>" . $row['nombre'] . "</option>";
-                    }
-                }
-                ?>
+                <?php echo $opcionesFormulario->obtenerOpcionesAreas(); ?>
             </select>
 
-            <label for="rol">Tipo de usuario (Rol):</label>
-            <select id="rol" name="rol" required>
-                <?php
-                $sql = "SELECT pk_rol, nombre FROM rol";
-                $result = $conn->query($sql);
-                
-                if (!$result) {
-                    echo "Error en la consulta de roles: " . $conn->conn->error;
-                } else {
-                    while ($row = $result->fetch_assoc()) {
-                        echo "<option value='" . $row['pk_rol'] . "'>" . $row['nombre'] . "</option>";
-                    }
-                }
-                ?>
+            <label for="roles">Tipo de usuario (Rol):</label> 
+            <select id="roles" name="roles" required> 
+                <?php echo $opcionesFormulario->obtenerOpcionesRoles(); ?>
             </select>
 
             <label for="genero">Género:</label>

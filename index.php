@@ -1,1 +1,1 @@
-<h1>haz iniciado sesión</h1>
+<h1>te registraste</h1>
