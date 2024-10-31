@@ -1,22 +1,26 @@
 <?php
-include 'conexion.php';
+include 'class/clases.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $capacidad = $_POST['capacidad'];
     $temperatura = $_POST['temperatura'];
     $iluminacion = $_POST['iluminacion'];
     $filtracion = $_POST['filtracion'];
-    $pk_area = $_POST['pk_area'];
-    $pk_especie = $_POST['pk_especie'];
+    $fk_area = $_POST['fk_area'];  
+    $fk_especie = $_POST['fk_especie']; 
+    $fecha = $_POST['fecha'];
 
-    $conn = new Conexion();
-    $sql = "INSERT INTO tanques (capacidad, temperatura, iluminacion, filtracion, pk_area, pk_especie) 
-            VALUES ('$capacidad', '$temperatura', '$iluminacion', '$filtracion', '$pk_area', '$pk_especie')";
+    $usuario = new Tanque();
+    
+    $registroExitoso = $usuario->registrar_tanque($capacidad, $temperatura, $iluminacion, $filtracion, $fk_area, $fk_especie, $fecha);
 
-    if ($conn->query($sql) === TRUE) {
-        echo "Tanque registrado con éxito.";
+    if ($registroExitoso === true) {
+        header("Location: reg_tanque.html");
+        exit;                               
     } else {
-        echo "Error al registrar el tanque: " . $conn->conn->error;
-    }
+        // Muestra el error devuelto
+        echo $registroExitoso;   
+    }  
 }
+
 ?>

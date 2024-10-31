@@ -1,3 +1,8 @@
+<?php
+include 'class/clases.php';
+
+$opcionesFormulario = new OpcionesFormulario();
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -22,34 +27,17 @@
             <label for="filtracion">Filtración:</label>
             <input type="text" id="filtracion" name="filtracion" required>
 
-            <label for="area">Área:</label>
-            <select id="area" name="pk_area" required>
-                <?php
-                include 'conexion.php';
-                $conn = new Conexion();
-                $resultado_areas = $conn->query("SELECT pk_area, nombre FROM areas");
-                if ($resultado_areas) {
-                    while ($area = $resultado_areas->fetch_assoc()) {
-                        echo "<option value='{$area['pk_area']}'>{$area['nombre']}</option>";
-                    }
-                } else {
-                    echo "<option disabled>No se encontraron áreas</option>";
-                }
-                ?>
+            <label for="fecha">Fecha:</label>
+            <input type="date" id="fecha" name="fecha" required>
+
+            <label for="fk_area">Área:</label>
+            <select id="fk_area" name="fk_area" required>
+                <?php echo $opcionesFormulario->obtenerOpcionesAreas(); ?>
             </select>
 
-            <label for="especie">Especie:</label>
-            <select id="especie" name="pk_especie" required>
-                <?php
-                $resultado_especies = $conn->query("SELECT pk_especie, nombre FROM especies");
-                if ($resultado_especies) {
-                    while ($especie = $resultado_especies->fetch_assoc()) {
-                        echo "<option value='{$especie['pk_especie']}'>{$especie['nombre']}</option>";
-                    }
-                } else {
-                    echo "<option disabled>No se encontraron especies</option>";
-                }
-                ?>
+            <label for="fk_especie">Especie:</label>
+            <select id="fk_especie" name="fk_especie" required>
+                <?php echo $opcionesFormulario->obtenerOpcionesEspecies(); ?>
             </select>
 
             <input type="submit" value="Registrar Tanque">
